@@ -17,7 +17,7 @@ public class Ticket{
     void markAsPaid(){
         isPaid = true;
     }
-
+    //Fucntion to return TicketId, TotalFee and if the ticket is Paid or not
     String displayTicketDetails(){
         return "Ticket Id: " + ticketId + " | total fee: " + totalFee + " | Is Paid: " + isPaid ; 
     }
