@@ -89,7 +89,10 @@ public class Ticket {
         }
 
         // (Car = $5/hr, Motorcycle = $3/hr) (use calculateParkingFee from Parkable)
-        this.totalFee = vehicle.calculateParkingFee(hoursParked);
+        if (vehicle instanceof Parkable) 
+        {
+            this.totalFee = ((Parkable) vehicle).calculateParkingFee(hoursParked);
+        }
         return this.totalFee;
     }
      /**
