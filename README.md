@@ -38,13 +38,15 @@ The system follows Object-Oriented Programming principles:
 ## Classes
 
 ### Core Classes
-- `Vehicle` (abstract)
-- `Car`
-- `Motorcycle`
-- `ParkingSpot`
-- `Ticket`
-- `ParkingGarage`
-- `PaymentSystem`
+- Vehicle (abstract)
+- Car
+- Motorcycle
+- ElectricVehicle
+- PickupTruck
+- ParkingSpot
+- Ticket
+- ParkingGarage
+- PaymentSystem
 
 ### Interface
 - `Parkable`
@@ -59,3 +61,4 @@ The system follows Object-Oriented Programming principles:
 - Vehicle removal from garage
 - View available parking spots
 - View garage status
+- Supports multiple vehicle types (Car, Motorcycle, ElectricVehicle, PickupTruck)
