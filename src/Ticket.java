@@ -92,6 +92,10 @@ public class Ticket {
         if (vehicle instanceof Parkable) 
         {
             this.totalFee = ((Parkable) vehicle).calculateParkingFee(hoursParked);
+        } 
+        else 
+        {
+            throw new IllegalStateException("Vehicle does not support parking fee calculation.");
         }
         return this.totalFee;
     }
