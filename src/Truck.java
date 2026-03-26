@@ -49,6 +49,41 @@ public class Truck extends Vehicle implements Parkable {
         this.numberOfAxles = numberOfAxles;
     }
     
+    /* Parks the truck in the given spot if empty
+     */
+    @Override
+    public void parkVehicle(ParkingSpot spot) {
+        if (spot == null) {
+            throw new IllegalArgumentException("Parking spot cannot be null.");
+        }
+        spot.assignVehicle(this);
+        System.out.println("Truck " + getLicensePlate() + " parked in spot " + spot.getSpotLabel() + ".");
+    }
+ 
+    /**
+     * Removes the truck from the given spot.
+     * Frees the spot and updates the vehicle's parked state.
+     */
+    @Override
+    public void leaveSpot(ParkingSpot spot) {
+        if (spot == null) {
+            throw new IllegalArgumentException("Parking spot cannot be null.");
+        }
+        spot.removeVehicle();
+        System.out.println("Truck " + getLicensePlate() + " has left spot " + spot.getSpotLabel() + ".");
+    }
+ 
+    /**
+     * Calculates the parking fee for the truck($8.00 per hour).
+     */
+    @Override
+    public double calculateParkingFee(int hours) {
+        if (hours <= 0) {
+            hours = 1;
+        }
+        return hours * 8.00;
+    }
+
     /*
      * Displays truck-specific information.
      */
