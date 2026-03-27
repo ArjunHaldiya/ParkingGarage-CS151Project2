@@ -4,14 +4,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class Tests {
 
-    private Truck truck;
+    private PickupTruck truck;
     private ParkingSpot spot;
     private Ticket ticket;
     private ParkingGarage garage;
 
     @BeforeEach
     void setUp() {
-        truck  = new Truck("T001", "TRUCK-01", "Arjun", 5, "Pickup", 2);
+        truck  = new PickupTruck("T001", "TRUCK-01", "Arjun", 5, "Pickup", 2);
         spot   = new ParkingSpot("S01", "A1");
         ticket = new Ticket("TKT-0001", truck, spot, 8);
         garage = new ParkingGarage("Test Garage");
