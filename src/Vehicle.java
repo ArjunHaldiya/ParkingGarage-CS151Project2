@@ -73,6 +73,12 @@ public abstract class Vehicle {
         System.out.println("Owner : " + ownerName);
     }
 
+    //checking if the license plate is not null/blank
+    public boolean validateLicensePlate() 
+    {
+    return licensePlate != null && !licensePlate.isBlank();
+    }
+
     
     @Override
     public String toString() 
