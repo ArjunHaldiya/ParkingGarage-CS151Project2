@@ -16,6 +16,11 @@ public class PaymentSystem {
             return false;
         }
 
+        if (ticket.isPaid()) {
+            System.out.println("Ticket " + ticket.getTicketId() + " has already been paid.");
+            return false;
+        }
+
         System.out.println("Payment of $" + amount + " processed for ticket " + ticket.getTicketId());
         return true;
     }
