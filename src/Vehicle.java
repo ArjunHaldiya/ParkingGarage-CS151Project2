@@ -1,3 +1,5 @@
+//Gunraj
+
 //an abstract class for all vehicles in the parking system
 public abstract class Vehicle {
     private String vehicleId;
@@ -41,14 +43,28 @@ public abstract class Vehicle {
         this.vehicleId = vehicleId;
     }
 
-    public void setLicensePlate(String licensePlate) 
+    //modifying the logic here for these 2 methods
+    public void setLicensePlate(String licensePlate) throws InvalidLicensePlateException 
     {
+        if (licensePlate == null || licensePlate.isBlank()) 
+        {
+            throw new InvalidLicensePlateException("License plate cannot be blank.");
+        }
+    
+        if (licensePlate.length() < 5) 
+        {
+            throw new InvalidLicensePlateException("License plate must be at least 5 characters long.");
+        }
+    
         this.licensePlate = licensePlate;
     }
-
+    
     public void setOwnerName(String ownerName) 
     {
-        this.ownerName = ownerName;
+        if (ownerName != null && !ownerName.isBlank()) 
+        {
+            this.ownerName = ownerName;
+        }
     }
 
     public void setParked(boolean parked) 
@@ -71,6 +87,7 @@ public abstract class Vehicle {
         System.out.println("Vehicle ID : " + vehicleId);
         System.out.println("License Plate : " + licensePlate);
         System.out.println("Owner : " + ownerName);
+        System.out.println("Parked : " + isParked);
     }
 
     //checking if the license plate is not null/blank
@@ -87,4 +104,43 @@ public abstract class Vehicle {
                ", Plate : " + licensePlate +
                ", Owner : " + ownerName;
     }
+
+
+    //adding some exceptions to test 
+
+    public class SpotOccupiedException extends Exception 
+    {
+        public SpotOccupiedException(String message) 
+        {
+            super(message);
+        }
+    }
+
+    public class InvalidPaymentException extends Exception 
+    {
+        public InvalidPaymentException(String message) 
+        {
+            super(message);
+        }
+    }
+
+
+    public class VehicleNotFoundException extends Exception 
+    {
+        public VehicleNotFoundException(String message) 
+        {
+            super(message);
+        }
+    }
+
+    //if license plate number entered is invalid 
+    public class InvalidLicensePlateException extends Exception 
+    {
+        public InvalidLicensePlateException(String message) {
+            super(message);
+        }
+    }
+
+
+    
 }

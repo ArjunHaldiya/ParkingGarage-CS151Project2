@@ -1,4 +1,10 @@
-public class PaymentSystem {
+// Name: Fnu Hasham
+//Gunaraj added the missing classes added that to the code
+public class PaymentSystem 
+{
+    private String paymentId;
+    private String paymentMethod;
+    private double amount;
 
     public double processPayment(double amount) {
         if (!validatePayment(amount)) {

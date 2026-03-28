@@ -1,5 +1,5 @@
 // Name: Fnu Hasham
-//made some corrections - was missing the actual class
+//Gunraj - made some corrections - was missing the actual class
 
 public class ParkingSpot 
 {

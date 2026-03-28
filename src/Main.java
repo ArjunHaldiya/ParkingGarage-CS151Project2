@@ -1,3 +1,5 @@
+//Gunraj
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -9,7 +11,7 @@ public class Main {
         ArrayList<Ticket> tickets = new ArrayList<>();
         ArrayList<ParkingSpot> spots = new ArrayList<>();
 
-        // preloaded parking spots
+        //preloaded parking spots tests
         spots.add(new ParkingSpot("S1"));
         spots.add(new ParkingSpot("S2"));
         spots.add(new ParkingSpot("S3"));

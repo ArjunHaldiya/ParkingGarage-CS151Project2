@@ -1,8 +1,8 @@
-public class PickupTruck extends Vehicle implements Parkable {
+//Gunraj
 
-    private int payloadCapacity;
-    private String truckType;
-    private int numberOfAxles;
+public class PickupTruck extends Vehicle implements Parkable 
+{
+    private double loadCapacity;
 
     public PickupTruck(String vehicleId, String licensePlate, String ownerName,
                  int payloadCapacity, String truckType, int numberOfAxles) {

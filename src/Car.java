@@ -1,3 +1,4 @@
+//Gunraj
 //car is a type of vehicle
 public class Car extends Vehicle implements Parkable
 {
@@ -49,13 +50,14 @@ public class Car extends Vehicle implements Parkable
     }
     }
 
+   
     @Override
-    public double calculateParkingFee(int hours) {
-    if (hours <= 0) {
-        return 0;
+    public double calculateParkingFee(int hours) 
+    {
+        int billableHours = Math.max(1, hours);
+        return billableHours * 5.0;
     }
-    return hours * 5.0;
-    }
+    
 
     @Override
     public void displayVehicleInfo() 

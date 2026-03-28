@@ -1,5 +1,9 @@
 
-public class Motorcycle extends Vehicle {
+//Gunraj - it was missing the actual class fixed that 
+public class Motorcycle extends Vehicle implements Parkable
+ {
+    private int engineSize;
+    private boolean hasHelmetStorage;
 
     public double calculateParkingFee(int hours) {
         if (hours <= 0) {
