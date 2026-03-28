@@ -1,3 +1,5 @@
+//Gunraj
+
 public class ElectricVehicle extends Vehicle implements Parkable 
 {
     private int batteryLevel;
@@ -19,6 +21,20 @@ public class ElectricVehicle extends Vehicle implements Parkable
     public boolean isCharging() 
     {
         return isCharging;
+    }
+
+    public String checkBatteryLevel() 
+    {
+        if (batteryLevel >= 80) 
+        {
+            return "Battery is high: " + batteryLevel + "%";
+        } else if (batteryLevel >= 20) 
+        {
+            return "Battery is moderate: " + batteryLevel + "%";
+        } else 
+        {
+            return "Battery is low: " + batteryLevel + "%";
+        }
     }
 
     public void setBatteryLevel(int batteryLevel) 
@@ -52,11 +68,11 @@ public class ElectricVehicle extends Vehicle implements Parkable
     }
 
     @Override
-    //assming EV's would get a discount
+    //assming EV's would get a discount and following the same format as the other classes
     public double calculateParkingFee(int hours) 
     {
-        if (hours <= 0) return 0;
-        return hours * 4.0;
+        int billableHours = Math.max(1, hours);
+        return billableHours * 4.0;
     }
 
     @Override
@@ -72,6 +88,18 @@ public class ElectricVehicle extends Vehicle implements Parkable
     {
         return "ElectricVehicle: " + super.toString() +
                ", Battery Level: " + batteryLevel +
-               ", Charging: " + isCharging;
+               ", Charging: " + isCharging +
+               ", Parked: " + isParked();
+    }
+
+    public void requestChargingSpot() 
+    {
+        if (batteryLevel < 20) 
+        {
+            System.out.println(getLicensePlate() + " needs charging.");
+        } else 
+        {
+            System.out.println(getLicensePlate() + " does not need charging.");
+        }
     }
 }
