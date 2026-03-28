@@ -30,24 +30,23 @@ public class Main {
             System.out.println("7. Exit");
             System.out.print("Enter your choice: ");
 
-            String choice = scanner.nextLine();
+            String choice = scanner.nextLine().trim();
 
             switch (choice) {
                 case "1":
                     System.out.print("Enter vehicle ID: ");
-                    String carId = scanner.nextLine();
+                    String carId = scanner.nextLine().trim();
 
                     System.out.print("Enter license plate: ");
-                    String carPlate = scanner.nextLine();
+                    String carPlate = scanner.nextLine().trim();
 
                     System.out.print("Enter owner name: ");
-                    String carOwner = scanner.nextLine();
+                    String carOwner = scanner.nextLine().trim();
 
-                    System.out.print("Enter number of doors: ");
-                    int doors = Integer.parseInt(scanner.nextLine());
+                    int doors = readInt(scanner, "Enter number of doors: ");
 
                     System.out.print("Enter fuel type: ");
-                    String fuelType = scanner.nextLine();
+                    String fuelType = scanner.nextLine().trim();
 
                     Car car = new Car(carId, carPlate, carOwner, doors, fuelType);
                     vehicles.add(car);
@@ -56,19 +55,16 @@ public class Main {
 
                 case "2":
                     System.out.print("Enter vehicle ID: ");
-                    String bikeId = scanner.nextLine();
+                    String bikeId = scanner.nextLine().trim();
 
                     System.out.print("Enter license plate: ");
-                    String bikePlate = scanner.nextLine();
+                    String bikePlate = scanner.nextLine().trim();
 
                     System.out.print("Enter owner name: ");
-                    String bikeOwner = scanner.nextLine();
+                    String bikeOwner = scanner.nextLine().trim();
 
-                    System.out.print("Enter engine size: ");
-                    int engineSize = Integer.parseInt(scanner.nextLine());
-
-                    System.out.print("Has helmet storage (true/false): ");
-                    boolean hasHelmetStorage = Boolean.parseBoolean(scanner.nextLine());
+                    int engineSize = readInt(scanner, "Enter engine size: ");
+                    boolean hasHelmetStorage = readBoolean(scanner, "Has helmet storage (true/false): ");
 
                     Motorcycle motorcycle = new Motorcycle(
                             bikeId, bikePlate, bikeOwner, engineSize, hasHelmetStorage);
@@ -78,10 +74,17 @@ public class Main {
 
                 case "3":
                     System.out.println("\nAvailable Spots:");
+                    boolean foundAvailableSpot = false;
+
                     for (ParkingSpot spot : spots) {
                         if (spot.checkAvailability()) {
                             spot.displaySpotInfo();
+                            foundAvailableSpot = true;
                         }
+                    }
+
+                    if (!foundAvailableSpot) {
+                        System.out.println("No available parking spots.");
                     }
                     break;
 
@@ -96,8 +99,7 @@ public class Main {
                         System.out.println((i + 1) + ". " + vehicles.get(i));
                     }
 
-                    System.out.print("Enter vehicle number: ");
-                    int vehicleIndex = Integer.parseInt(scanner.nextLine()) - 1;
+                    int vehicleIndex = readInt(scanner, "Enter vehicle number: ") - 1;
 
                     if (vehicleIndex < 0 || vehicleIndex >= vehicles.size()) {
                         System.out.println("Invalid vehicle selection.");
@@ -122,8 +124,7 @@ public class Main {
                     if (selectedVehicle instanceof Parkable) {
                         ((Parkable) selectedVehicle).parkVehicle(availableSpot);
 
-                        System.out.print("Enter entry hour (0-23): ");
-                        int entryHour = Integer.parseInt(scanner.nextLine());
+                        int entryHour = readIntInRange(scanner, "Enter entry hour (0-23): ", 0, 23);
 
                         Ticket ticket = new Ticket(
                                 "T" + ticketCounter,
@@ -131,6 +132,7 @@ public class Main {
                                 availableSpot,
                                 entryHour
                         );
+
                         ticket.generateTicket();
                         tickets.add(ticket);
                         ticketCounter++;
@@ -150,8 +152,7 @@ public class Main {
                         System.out.println((i + 1) + ". " + tickets.get(i));
                     }
 
-                    System.out.print("Enter ticket number: ");
-                    int ticketIndex = Integer.parseInt(scanner.nextLine()) - 1;
+                    int ticketIndex = readInt(scanner, "Enter ticket number: ") - 1;
 
                     if (ticketIndex < 0 || ticketIndex >= tickets.size()) {
                         System.out.println("Invalid ticket selection.");
@@ -160,8 +161,7 @@ public class Main {
 
                     Ticket selectedTicket = tickets.get(ticketIndex);
 
-                    System.out.print("Enter exit hour (0-23): ");
-                    int exitHour = Integer.parseInt(scanner.nextLine());
+                    int exitHour = readIntInRange(scanner, "Enter exit hour (0-23): ", 0, 23);
 
                     double fee = selectedTicket.calculateParkingFee(exitHour);
                     System.out.println("Total fee: $" + fee);
@@ -179,6 +179,8 @@ public class Main {
                         if (vehicle instanceof Parkable) {
                             ((Parkable) vehicle).leaveSpot(spot);
                         }
+                    } else {
+                        System.out.println("Payment validation failed.");
                     }
                     break;
 
@@ -203,5 +205,45 @@ public class Main {
         }
 
         scanner.close();
+    }
+
+    public static int readInt(Scanner scanner, String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+
+            try {
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a whole number.");
+            }
+        }
+    }
+
+    public static int readIntInRange(Scanner scanner, String prompt, int min, int max) {
+        while (true) {
+            int value = readInt(scanner, prompt);
+
+            if (value >= min && value <= max) {
+                return value;
+            }
+
+            System.out.println("Invalid input. Please enter a number between " + min + " and " + max + ".");
+        }
+    }
+
+    public static boolean readBoolean(Scanner scanner, String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim().toLowerCase();
+
+            if (input.equals("true")) {
+                return true;
+            } else if (input.equals("false")) {
+                return false;
+            } else {
+                System.out.println("Invalid input. Please enter true or false.");
+            }
+        }
     }
 }

@@ -6,76 +6,73 @@ public class PaymentSystem
     private String paymentMethod;
     private double amount;
 
-    //constructor
-    public PaymentSystem(String paymentId, String paymentMethod, double amount) {
-        this.paymentId = paymentId;
-        this.paymentMethod = paymentMethod;
-        this.amount = amount;
-    }
-
-    //getters & setters
-    public String getPaymentId() {
-        return paymentId;
-    }
-
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setPaymentId(String paymentId) 
-    {
-        this.paymentId = paymentId;
-    }
-
-    public void setPaymentMethod(String paymentMethod) 
-    {
-        this.paymentMethod = paymentMethod;
-    }
-
-    public void setAmount(double amount) 
-    {
-        this.amount = amount;
-    }
-
-    //processsing a payment
     public double processPayment(double amount) {
-        if (amount <= 0) {
+        if (!validatePayment(amount)) {
             System.out.println("Invalid payment amount.");
             return 0;
         }
-        this.amount = amount;
+
         System.out.println("Payment of $" + amount + " processed.");
         return amount;
     }
 
-    //validating amount
+    public boolean processPayment(Ticket ticket, double amount) {
+        if (ticket == null || !validatePayment(amount)) {
+            System.out.println("Invalid payment.");
+            return false;
+        }
+
+        if (ticket.isPaid()) {
+            System.out.println("Ticket " + ticket.getTicketId() + " has already been paid.");
+            return false;
+        }
+
+        System.out.println("Payment of $" + amount + " processed for ticket " + ticket.getTicketId());
+        return true;
+    }
+
     public boolean validatePayment(double amount) {
         return amount > 0;
     }
 
-    //printing receipt
-    public void generateReceipt(double amount) {
-        System.out.println("Receipt: Paid $" + amount);
+    public void printReceipt(double amount) {
+        if (amount > 0) {
+            System.out.println("Receipt: Paid $" + amount);
+        } else {
+            System.out.println("No valid payment made.");
+        }
     }
 
-    //refund
-    public void refundPayment(double amount) {
+    public void generateReceipt(Ticket ticket) {
+        if (ticket == null) {
+            System.out.println("Cannot generate receipt. Ticket is null.");
+            return;
+        }
+
+        System.out.println("========================================");
+        System.out.println("               RECEIPT                  ");
+        System.out.println("========================================");
+        System.out.println("Ticket ID  : " + ticket.getTicketId());
+        System.out.printf("Amount Paid: $%.2f%n", ticket.getTotalFee());
+        System.out.println("Status     : " + (ticket.isPaid() ? "PAID" : "UNPAID"));
+        System.out.println("========================================");
+    }
+
+    public boolean refundPayment(double amount) {
+        if (amount <= 0) {
+            System.out.println("Invalid refund amount.");
+            return false;
+        }
+
         System.out.println("Refunded $" + amount);
+        return true;
     }
 
-    //system status
-    public void displayPaymentStatus() {
-        System.out.println("Payment system is active.");
-    }
-
-    @Override
-    public String toString() {
-        return "PaymentSystem{paymentId='" + paymentId +
-               "', method='" + paymentMethod +
-               "', amount=" + amount + "}";
+    public void displayPaymentStatus(boolean paid) {
+        if (paid) {
+            System.out.println("Payment completed successfully.");
+        } else {
+            System.out.println("Payment pending.");
+        }
     }
 }
