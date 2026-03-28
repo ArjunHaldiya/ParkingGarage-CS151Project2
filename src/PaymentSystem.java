@@ -1,41 +1,51 @@
 // Name: Fnu Hasham
-//Gunaraj added the missing classes added that to the code
-public class PaymentSystem 
-{
+//Gunraj added the missing classes and cleaned up the code
+
+
+public class PaymentSystem {
     private String paymentId;
     private String paymentMethod;
     private double amount;
 
-    public double processPayment(double amount) {
-        if (!validatePayment(amount)) {
-            System.out.println("Invalid payment amount.");
-            return 0;
-        }
+    public PaymentSystem(String paymentId, String paymentMethod, double amount) 
+    {
+        this.paymentId = paymentId;
+        this.paymentMethod = paymentMethod;
+        this.amount = amount;
+    }
 
-        System.out.println("Payment of $" + amount + " processed.");
+    public boolean validatePayment(double amount) 
+    {
+        return amount > 0;
+    }
+
+    //process payment by amount — throws InvalidPaymentException if amount is invalid
+    public double processPayment(double amount) 
+    {
+        if (!validatePayment(amount)) {
+            throw new InvalidPaymentException("Invalid payment amount: $" + amount);
+        }
+        System.out.println("Payment of $" + amount + " processed via " + paymentMethod + ".");
         return amount;
     }
 
-    public boolean processPayment(Ticket ticket, double amount) {
-        if (ticket == null || !validatePayment(amount)) {
-            System.out.println("Invalid payment.");
-            return false;
+    //process payment linked to a specific ticket
+    public boolean processPayment(Ticket ticket, double amount) 
+    {
+        if (ticket == null || !validatePayment(amount)) 
+        {
+            throw new InvalidPaymentException("Invalid payment.");
         }
-
         if (ticket.isPaid()) {
-            System.out.println("Ticket " + ticket.getTicketId() + " has already been paid.");
-            return false;
+            throw new InvalidPaymentException("Ticket " + ticket.getTicketId() + " has already been paid.");
         }
-
         System.out.println("Payment of $" + amount + " processed for ticket " + ticket.getTicketId());
         return true;
     }
 
-    public boolean validatePayment(double amount) {
-        return amount > 0;
-    }
-
-    public void printReceipt(double amount) {
+    //generate receipt for a dollar amount
+    public void generateReceipt(double amount) 
+    {
         if (amount > 0) {
             System.out.println("Receipt: Paid $" + amount);
         } else {
@@ -43,32 +53,36 @@ public class PaymentSystem
         }
     }
 
-    public void generateReceipt(Ticket ticket) {
+    //generate detailed receipt linked to a ticket
+    public void generateReceipt(Ticket ticket) 
+    {
         if (ticket == null) {
             System.out.println("Cannot generate receipt. Ticket is null.");
             return;
         }
-
         System.out.println("========================================");
         System.out.println("               RECEIPT                  ");
         System.out.println("========================================");
         System.out.println("Ticket ID  : " + ticket.getTicketId());
-        System.out.printf("Amount Paid: $%.2f%n", ticket.getTotalFee());
+        System.out.println("Vehicle    : " + ticket.getVehicle().getLicensePlate());
+        System.out.println("Method     : " + paymentMethod);
+        System.out.printf( "Amount Paid: $%.2f%n", ticket.getTotalFee());
         System.out.println("Status     : " + (ticket.isPaid() ? "PAID" : "UNPAID"));
         System.out.println("========================================");
     }
 
-    public boolean refundPayment(double amount) {
+    public boolean refundPayment(double amount) 
+    {
         if (amount <= 0) {
             System.out.println("Invalid refund amount.");
             return false;
         }
-
         System.out.println("Refunded $" + amount);
         return true;
     }
 
-    public void displayPaymentStatus(boolean paid) {
+    public void displayPaymentStatus(boolean paid) 
+    {
         if (paid) {
             System.out.println("Payment completed successfully.");
         } else {

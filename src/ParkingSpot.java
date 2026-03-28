@@ -1,74 +1,63 @@
 // Name: Fnu Hasham
-//Gunraj - made some corrections - was missing the actual class
+//Gunraj - made some corrections, was missing the actual class and cleaned up code
 
 public class ParkingSpot 
 {
     private String spotId;
-    private Vehicle vehicle;
+    private Vehicle assignedVehicle;
 
     public ParkingSpot(String spotId) 
     {
         this.spotId = spotId;
-        this.vehicle = null;
+        this.assignedVehicle = null;
     }
 
-    public String getSpotId() 
-    {
-        return spotId;
+    public String getSpotId()    
+    { 
+        return spotId; 
     }
-
-    public void setSpotId(String spotId) 
-    {
-        this.spotId = spotId;
+    public String getSpotLabel() 
+    { 
+        return spotId; 
+    } //alias used by vehicle classes
+    public Vehicle getAssignedVehicle() 
+    { 
+        return assignedVehicle; 
     }
-
-    public Vehicle getVehicle() 
-    {
-        return vehicle;
-    }
-
-    public Vehicle getAssignedVehicle()
-    {
-        return vehicle;
+    public boolean isOccupied() 
+    { 
+        return assignedVehicle != null;
     }
 
     public boolean checkAvailability() 
-    {
-        return vehicle == null;
-    }
-
-    public boolean isOccupied()
-    {
-        return vehicle != null;
+    { 
+        return assignedVehicle == null;
     }
 
     public void assignVehicle(Vehicle vehicle) 
     {
-        if (this.vehicle == null) 
+        if (this.assignedVehicle != null) 
         {
-            this.vehicle = vehicle;
+            throw new SpotOccupiedException("Spot " + spotId + " is already occupied.");
         }
+        this.assignedVehicle = vehicle;
     }
 
     public void removeVehicle() 
     {
-        this.vehicle = null;
+        this.assignedVehicle = null;
     }
 
     public void displaySpotInfo() 
     {
-        System.out.println("Spot ID: " + spotId);
-        System.out.println("Occupied: " + (vehicle != null));
+        System.out.println("Spot ID  : " + spotId);
+        System.out.println("Status   : " + (isOccupied() ? "Occupied" : "Available"));
+        if (isOccupied()) System.out.println("Vehicle  : " + assignedVehicle.getLicensePlate());
     }
 
     @Override
     public String toString() 
     {
-        return "ParkingSpot{spotId='" + spotId + "', occupied=" + (vehicle != null) + "}";
-    }
-
-    public String getSpotLabel() 
-    {
-        return spotId;
+        return "ParkingSpot{id=" + spotId + ", occupied=" + isOccupied() + "}";
     }
 }
