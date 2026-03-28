@@ -10,9 +10,9 @@ public class Main {
         ArrayList<ParkingSpot> spots = new ArrayList<>();
 
         // preloaded parking spots
-        spots.add(new ParkingSpot("S1", "A1"));
-        spots.add(new ParkingSpot("S2", "A2"));
-        spots.add(new ParkingSpot("S3", "A3"));
+        spots.add(new ParkingSpot("S1"));
+        spots.add(new ParkingSpot("S2"));
+        spots.add(new ParkingSpot("S3"));
 
         boolean running = true;
         int ticketCounter = 1;
@@ -21,202 +21,178 @@ public class Main {
             System.out.println("\n===== Parking Garage System =====");
             System.out.println("1. Add Car");
             System.out.println("2. Add Motorcycle");
-            System.out.println("3. Add Truck");
-            System.out.println("4. Add Electric Vehicle");
-            System.out.println("5. View Available Spots");
-            System.out.println("6. Park Vehicle");
-            System.out.println("7. Calculate Fee and Pay");
-            System.out.println("8. View Tickets");
-            System.out.println("9. View Garage Status");
-            System.out.println("10. Exit");
+            System.out.println("3. View Available Spots");
+            System.out.println("4. Park Vehicle");
+            System.out.println("5. Calculate Fee and Pay");
+            System.out.println("6. View Tickets");
+            System.out.println("7. Exit");
             System.out.print("Enter your choice: ");
 
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            String choice = scanner.nextLine().trim();
 
             switch (choice) {
-                case 1:
-                    if (vehicles.size() >= 100) { System.out.println("Max vehicles reached."); break; }
+                case "1":
                     System.out.print("Enter vehicle ID: ");
-                    String carId = scanner.nextLine();
+                    String carId = scanner.nextLine().trim();
+
                     System.out.print("Enter license plate: ");
-                    String carPlate = scanner.nextLine();
+                    String carPlate = scanner.nextLine().trim();
+
                     System.out.print("Enter owner name: ");
-                    String carOwner = scanner.nextLine();
-                    System.out.print("Enter number of doors: ");
-                    int doors = scanner.nextInt();
-                    scanner.nextLine();
+                    String carOwner = scanner.nextLine().trim();
+
+                    int doors = readInt(scanner, "Enter number of doors: ");
+
                     System.out.print("Enter fuel type: ");
-                    String fuelType = scanner.nextLine();
-                    vehicles.add(new Car(carId, carPlate, carOwner, doors, fuelType));
+                    String fuelType = scanner.nextLine().trim();
+
+                    Car car = new Car(carId, carPlate, carOwner, doors, fuelType);
+                    vehicles.add(car);
                     System.out.println("Car added successfully.");
                     break;
 
-                case 2:
-                    if (vehicles.size() >= 100) { System.out.println("Max vehicles reached."); break; }
+                case "2":
                     System.out.print("Enter vehicle ID: ");
-                    String bikeId = scanner.nextLine();
+                    String bikeId = scanner.nextLine().trim();
+
                     System.out.print("Enter license plate: ");
-                    String bikePlate = scanner.nextLine();
+                    String bikePlate = scanner.nextLine().trim();
+
                     System.out.print("Enter owner name: ");
-                    String bikeOwner = scanner.nextLine();
-                    System.out.print("Enter engine size (cc): ");
-                    int engineSize = scanner.nextInt();
-                    scanner.nextLine();
-                    System.out.print("Has helmet storage (true/false): ");
-                    boolean hasHelmetStorage = scanner.nextBoolean();
-                    scanner.nextLine();
-                    vehicles.add(new Motorcycle(bikeId, bikePlate, bikeOwner, engineSize, hasHelmetStorage));
+                    String bikeOwner = scanner.nextLine().trim();
+
+                    int engineSize = readInt(scanner, "Enter engine size: ");
+                    boolean hasHelmetStorage = readBoolean(scanner, "Has helmet storage (true/false): ");
+
+                    Motorcycle motorcycle = new Motorcycle(
+                            bikeId, bikePlate, bikeOwner, engineSize, hasHelmetStorage);
+                    vehicles.add(motorcycle);
                     System.out.println("Motorcycle added successfully.");
                     break;
 
-                case 3:
-                    if (vehicles.size() >= 100) { System.out.println("Max vehicles reached."); break; }
-                    System.out.print("Enter vehicle ID: ");
-                    String truckId = scanner.nextLine();
-                    System.out.print("Enter license plate: ");
-                    String truckPlate = scanner.nextLine();
-                    System.out.print("Enter owner name: ");
-                    String truckOwner = scanner.nextLine();
-                    System.out.print("Enter payload capacity (tons): ");
-                    int payload = scanner.nextInt();
-                    scanner.nextLine();
-                    System.out.print("Enter truck type (Pickup/Semi/Flatbed): ");
-                    String truckType = scanner.nextLine();
-                    System.out.print("Enter number of axles: ");
-                    int axles = scanner.nextInt();
-                    scanner.nextLine();
-                    vehicles.add(new Truck(truckId, truckPlate, truckOwner, payload, truckType, axles));
-                    System.out.println("Truck added successfully.");
-                    break;
-
-                case 4:
-                    if (vehicles.size() >= 100) { System.out.println("Max vehicles reached."); break; }
-                    System.out.print("Enter vehicle ID: ");
-                    String evId = scanner.nextLine();
-                    System.out.print("Enter license plate: ");
-                    String evPlate = scanner.nextLine();
-                    System.out.print("Enter owner name: ");
-                    String evOwner = scanner.nextLine();
-                    System.out.print("Enter battery level (0-100): ");
-                    int battery = scanner.nextInt();
-                    scanner.nextLine();
-                    System.out.print("Enter range (miles): ");
-                    int range = scanner.nextInt();
-                    scanner.nextLine();
-                    System.out.print("Enter charger type (Level 1/Level 2/DC Fast): ");
-                    String chargerType = scanner.nextLine();
-                    vehicles.add(new ElectricVehicle(evId, evPlate, evOwner, battery, range, chargerType));
-                    System.out.println("Electric Vehicle added successfully.");
-                    break;
-
-                case 5:
+                case "3":
                     System.out.println("\nAvailable Spots:");
+                    boolean foundAvailableSpot = false;
+
                     for (ParkingSpot spot : spots) {
-                        if (spot.checkAvailability()) spot.displaySpotInfo();
+                        if (spot.checkAvailability()) {
+                            spot.displaySpotInfo();
+                            foundAvailableSpot = true;
+                        }
+                    }
+
+                    if (!foundAvailableSpot) {
+                        System.out.println("No available parking spots.");
                     }
                     break;
 
-                case 6:
-                    if (vehicles.isEmpty()) { System.out.println("No vehicles available to park."); break; }
+                case "4":
+                    if (vehicles.isEmpty()) {
+                        System.out.println("No vehicles available to park.");
+                        break;
+                    }
 
                     System.out.println("Select a vehicle to park:");
                     for (int i = 0; i < vehicles.size(); i++) {
-                        System.out.println((i + 1) + ". " + vehicles.get(i)
-                                + (vehicles.get(i).isParked() ? " [PARKED]" : ""));
+                        System.out.println((i + 1) + ". " + vehicles.get(i));
                     }
 
-                    System.out.print("Enter vehicle number: ");
-                    int vehicleIndex = scanner.nextInt() - 1;
-                    scanner.nextLine();
+                    int vehicleIndex = readInt(scanner, "Enter vehicle number: ") - 1;
 
                     if (vehicleIndex < 0 || vehicleIndex >= vehicles.size()) {
-                        System.out.println("Invalid selection.");
+                        System.out.println("Invalid vehicle selection.");
                         break;
                     }
 
                     Vehicle selectedVehicle = vehicles.get(vehicleIndex);
-                    if (selectedVehicle.isParked()) { System.out.println("That vehicle is already parked."); break; }
 
                     ParkingSpot availableSpot = null;
                     for (ParkingSpot spot : spots) {
-                        if (spot.checkAvailability()) { availableSpot = spot; break; }
+                        if (spot.checkAvailability()) {
+                            availableSpot = spot;
+                            break;
+                        }
                     }
-                    if (availableSpot == null) { System.out.println("No available parking spots."); break; }
 
-                    System.out.print("Enter entry hour (0-23): ");
-                    int entryHour = scanner.nextInt();
-                    scanner.nextLine();
+                    if (availableSpot == null) {
+                        System.out.println("No available parking spots.");
+                        break;
+                    }
 
-                    if (entryHour < 0 || entryHour > 23) { System.out.println("Invalid hour."); break; }
+                    if (selectedVehicle instanceof Parkable) {
+                        ((Parkable) selectedVehicle).parkVehicle(availableSpot);
 
-                    ((Parkable) selectedVehicle).parkVehicle(availableSpot);
-                    selectedVehicle.enterGarage();
-                    Ticket ticket = new Ticket("T" + ticketCounter, selectedVehicle, availableSpot, entryHour);
-                    ticket.generateTicket();
-                    tickets.add(ticket);
-                    ticketCounter++;
+                        int entryHour = readIntInRange(scanner, "Enter entry hour (0-23): ", 0, 23);
+
+                        Ticket ticket = new Ticket(
+                                "T" + ticketCounter,
+                                selectedVehicle,
+                                availableSpot,
+                                entryHour
+                        );
+
+                        ticket.generateTicket();
+                        tickets.add(ticket);
+                        ticketCounter++;
+                    } else {
+                        System.out.println("Selected vehicle cannot be parked.");
+                    }
                     break;
 
-                case 7:
-                    if (tickets.isEmpty()) { System.out.println("No active tickets found."); break; }
+                case "5":
+                    if (tickets.isEmpty()) {
+                        System.out.println("No active tickets found.");
+                        break;
+                    }
 
                     System.out.println("Select a ticket:");
                     for (int i = 0; i < tickets.size(); i++) {
                         System.out.println((i + 1) + ". " + tickets.get(i));
                     }
 
-                    System.out.print("Enter ticket number: ");
-                    int ticketIndex = scanner.nextInt() - 1;
-                    scanner.nextLine();
+                    int ticketIndex = readInt(scanner, "Enter ticket number: ") - 1;
 
                     if (ticketIndex < 0 || ticketIndex >= tickets.size()) {
-                        System.out.println("Invalid selection.");
+                        System.out.println("Invalid ticket selection.");
                         break;
                     }
 
                     Ticket selectedTicket = tickets.get(ticketIndex);
-                    System.out.print("Enter exit hour (0-23): ");
-                    int exitHour = scanner.nextInt();
-                    scanner.nextLine();
 
-                    if (exitHour < 0 || exitHour > 23) { System.out.println("Invalid hour."); break; }
+                    int exitHour = readIntInRange(scanner, "Enter exit hour (0-23): ", 0, 23);
 
                     double fee = selectedTicket.calculateParkingFee(exitHour);
                     System.out.println("Total fee: $" + fee);
 
                     PaymentSystem payment = new PaymentSystem("P" + ticketIndex, "Card", fee);
+
                     if (payment.validatePayment(fee)) {
                         payment.processPayment(fee);
-                        payment.printReceipt(fee);
+                        payment.generateReceipt(fee);
                         selectedTicket.markAsPaid();
-                        ((Parkable) selectedTicket.getVehicle()).leaveSpot(selectedTicket.getParkingSpot());
-                        selectedTicket.getVehicle().leaveGarage();
-                        tickets.remove(ticketIndex);
-                    }
-                    break;
 
-                case 8:
-                    if (tickets.isEmpty()) {
-                        System.out.println("No active tickets.");
+                        Vehicle vehicle = selectedTicket.getVehicle();
+                        ParkingSpot spot = selectedTicket.getParkingSpot();
+
+                        if (vehicle instanceof Parkable) {
+                            ((Parkable) vehicle).leaveSpot(spot);
+                        }
                     } else {
-                        for (Ticket t : tickets) t.displayTicketDetails();
+                        System.out.println("Payment validation failed.");
                     }
                     break;
 
-                case 9:
-                    int occupied = 0;
-                    for (ParkingSpot spot : spots) {
-                        if (!spot.checkAvailability()) occupied++;
+                case "6":
+                    if (tickets.isEmpty()) {
+                        System.out.println("No tickets available.");
+                    } else {
+                        for (Ticket ticket : tickets) {
+                            ticket.displayTicketDetails();
+                        }
                     }
-                    System.out.println("\n===== Garage Status =====");
-                    System.out.println("Total Spots   : " + spots.size());
-                    System.out.println("Occupied      : " + occupied);
-                    System.out.println("Available     : " + (spots.size() - occupied));
-                    System.out.println("Active Tickets: " + tickets.size());
                     break;
 
-                case 10:
+                case "7":
                     running = false;
                     System.out.println("Exiting system...");
                     break;
@@ -227,5 +203,45 @@ public class Main {
         }
 
         scanner.close();
+    }
+
+    public static int readInt(Scanner scanner, String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+
+            try {
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a whole number.");
+            }
+        }
+    }
+
+    public static int readIntInRange(Scanner scanner, String prompt, int min, int max) {
+        while (true) {
+            int value = readInt(scanner, prompt);
+
+            if (value >= min && value <= max) {
+                return value;
+            }
+
+            System.out.println("Invalid input. Please enter a number between " + min + " and " + max + ".");
+        }
+    }
+
+    public static boolean readBoolean(Scanner scanner, String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim().toLowerCase();
+
+            if (input.equals("true")) {
+                return true;
+            } else if (input.equals("false")) {
+                return false;
+            } else {
+                System.out.println("Invalid input. Please enter true or false.");
+            }
+        }
     }
 }

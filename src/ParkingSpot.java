@@ -27,9 +27,19 @@ public class ParkingSpot
         return vehicle;
     }
 
+    public Vehicle getAssignedVehicle()
+    {
+        return vehicle;
+    }
+
     public boolean checkAvailability() 
     {
         return vehicle == null;
+    }
+
+    public boolean isOccupied()
+    {
+        return vehicle != null;
     }
 
     public void assignVehicle(Vehicle vehicle) 
@@ -56,7 +66,6 @@ public class ParkingSpot
     {
         return "ParkingSpot{spotId='" + spotId + "', occupied=" + (vehicle != null) + "}";
     }
-
 
     public String getSpotLabel() 
     {
