@@ -19,4 +19,12 @@ public interface Parkable {
      * return total fee as double
      */
     double calculateParkingFee(int hours);
+
+    /**
+     * Returns the preferred spot type for this vehicle.
+     *   Car / Motorcycle = "STANDARD"
+     *   ElectricVehicle  = "EV"
+     *   PickupTruck      = "LARGE"
+     */
+    String getPreferredSpotType();
 }

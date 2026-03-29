@@ -1,5 +1,3 @@
-//Gunraj
-// Hasham: updated
 import java.util.Scanner;
 
 public class Main {

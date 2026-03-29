@@ -1,6 +1,3 @@
-//Gunraj
-//car is a type of vehicle
-// Hasham-made some changes 
 
 public class Car extends Vehicle implements Parkable {
     private int numberOfDoors;
@@ -49,7 +46,30 @@ public class Car extends Vehicle implements Parkable {
 
 
     @Override
-    public double calculateParkingFee(int hours) 
+    public String getPreferredSpotType() { return "STANDARD"; }
+
+    public boolean isElectricFuel() {
+        return fuelType.equalsIgnoreCase("electric") || fuelType.equalsIgnoreCase("hybrid");
+    }
+
+    public boolean isCompact() {
+        return numberOfDoors <= 2;
+    }
+
+    public String getCarCategory() {
+        if (isCompact()) return "Compact";
+        if (numberOfDoors >= 5) return "Minivan";
+        return "Standard";
+    }
+
+    public void updateConfiguration(int newDoors, String newFuel) {
+        if (newDoors > 0) this.numberOfDoors = newDoors;
+        if (newFuel != null && !newFuel.isBlank()) this.fuelType = newFuel;
+        System.out.println("Car configuration updated: " + this.numberOfDoors + " doors, " + this.fuelType + " fuel.");
+    }
+
+    @Override
+    public double calculateParkingFee(int hours)
     {
         int billable = Math.max(1, hours);
         return billable * 5.0;

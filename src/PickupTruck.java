@@ -1,6 +1,3 @@
-//Arjun
-//Gunraj code reviewing and cleaning up
-
 public class PickupTruck extends Vehicle implements Parkable 
 {
     private int payloadCapacity;
@@ -33,7 +30,34 @@ public class PickupTruck extends Vehicle implements Parkable
     }
 
     @Override
-    public double calculateParkingFee(int hours) 
+    public String getPreferredSpotType() { return "LARGE"; }
+
+    public boolean isHeavyDuty() {
+        return payloadCapacity > 5;
+    }
+
+    public boolean canTow(int weightTons) {
+        if (weightTons <= 0) {
+            System.out.println("Invalid tow weight.");
+            return false;
+        }
+        boolean result = weightTons <= payloadCapacity;
+        System.out.println(getLicensePlate() + (result ? " can" : " cannot") + " tow " + weightTons + " tons.");
+        return result;
+    }
+
+    public boolean isSemiTruck() {
+        return truckType.equalsIgnoreCase("Semi");
+    }
+
+    public String getTruckCategory() {
+        if (isSemiTruck()) return "Semi Truck";
+        if (isHeavyDuty()) return "Heavy Duty";
+        return "Light Duty";
+    }
+
+    @Override
+    public double calculateParkingFee(int hours)
     {
         int billableHours = Math.max(1, hours);
         return billableHours * 8.00;

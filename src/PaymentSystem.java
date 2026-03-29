@@ -1,7 +1,3 @@
-// Name: Fnu Hasham
-//Gunraj added the missing classes and cleaned up the code
-
-
 public class PaymentSystem {
     private String paymentId;
     private String paymentMethod;

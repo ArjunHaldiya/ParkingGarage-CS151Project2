@@ -51,9 +51,15 @@ public class Motorcycle extends Vehicle implements Parkable {
         return billableHours * 3.0;
     }
 
-    public boolean canFitInSpot(String spotType) 
-    {
-        return spotType.equalsIgnoreCase("compact") || spotType.equalsIgnoreCase("motorcycle");
+    @Override
+    public String getPreferredSpotType() { return "STANDARD"; }
+
+    public boolean isHighPerformance() {
+        return engineSize > 600;
+    }
+
+    public String getHelmetStorageStatus() {
+        return hasHelmetStorage ? "Helmet storage available" : "No helmet storage";
     }
 
     public void displayParkingMessage() {

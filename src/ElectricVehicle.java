@@ -1,6 +1,3 @@
-//Gunraj
-
-
 public class ElectricVehicle extends Vehicle implements Parkable {
     private int batteryLevel;
     private int range;
@@ -82,6 +79,22 @@ public class ElectricVehicle extends Vehicle implements Parkable {
     public void leaveSpot(ParkingSpot spot) {
         spot.removeVehicle();
         setParked(false);
+    }
+
+    @Override
+    public String getPreferredSpotType() { return "EV"; }
+
+    public void charge(int amount) {
+        if (amount <= 0) {
+            System.out.println("Invalid charge amount.");
+            return;
+        }
+        setBatteryLevel(Math.min(100, batteryLevel + amount));
+        System.out.println(getLicensePlate() + " charged to " + batteryLevel + "%.");
+    }
+
+    public int estimateRemainingRange() {
+        return (int)(range * (batteryLevel / 100.0));
     }
 
     //assuming EVs get a slight discount

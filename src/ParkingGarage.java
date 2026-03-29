@@ -8,14 +8,16 @@ public class ParkingGarage
     private String garageName;
     private ArrayList<ParkingSpot> parkingSpots;
     private ArrayList<Ticket> activeTickets;
+    private ArrayList<Ticket> paidTickets;
     private ArrayList<Vehicle> parkedVehicles;
     private int ticketCounter;
 
-    public ParkingGarage(String garageName) 
+    public ParkingGarage(String garageName)
     {
         this.garageName = garageName;
         this.parkingSpots = new ArrayList<>();
         this.activeTickets = new ArrayList<>();
+        this.paidTickets = new ArrayList<>();
         this.parkedVehicles = new ArrayList<>();
         this.ticketCounter = 1;
     }
@@ -67,14 +69,14 @@ public class ParkingGarage
             return null;
         }
 
+        // validate license plate before parking
+        if (!vehicle.validateLicensePlate()) {
+            System.out.println("Error: vehicle has an invalid license plate.");
+            return null;
+        }
+
         // route vehicle to its preferred spot type
-        ParkingSpot spot;
-        if (vehicle instanceof ElectricVehicle)
-            spot = findAvailableSpotOfType("EV");
-        else if (vehicle instanceof PickupTruck)
-            spot = findAvailableSpotOfType("LARGE");
-        else
-            spot = findAvailableSpotOfType("STANDARD");
+        ParkingSpot spot = findAvailableSpotOfType(((Parkable) vehicle).getPreferredSpotType());
 
         if (spot == null) {
             System.out.println("Error: no available spots.");
@@ -114,7 +116,8 @@ public class ParkingGarage
 
         //catching the InvalidPaymentException if the payment fails
         try {
-            payment.processPayment(ticket, fee);
+            payment.processPayment(fee);         // validate amount
+            payment.processPayment(ticket, fee); // process against ticket
         } catch (InvalidPaymentException e) {
             System.out.println("Payment error: " + e.getMessage());
             return false;
@@ -124,9 +127,12 @@ public class ParkingGarage
         ticket.getVehicle().leaveGarage();
         ticket.markAsPaid();
 
-        payment.generateReceipt(ticket);
+        payment.generateReceipt(fee);    // quick summary line
+        payment.generateReceipt(ticket); // full formatted receipt
+        payment.displayPaymentStatus(ticket.isPaid());
 
         activeTickets.remove(ticket);
+        paidTickets.add(ticket);
         parkedVehicles.remove(ticket.getVehicle());
 
         System.out.println(ticket.getVehicle().getLicensePlate() + " has exited. Goodbye!");
@@ -187,9 +193,28 @@ public class ParkingGarage
         return parkingSpots; 
     }
 
-    public ArrayList<Ticket> getActiveTickets()     
-    { 
-        return activeTickets; 
+    public ArrayList<Ticket> getActiveTickets()
+    {
+        return activeTickets;
+    }
+
+    public ArrayList<Ticket> getPaidTickets()
+    {
+        return paidTickets;
+    }
+
+    public void refundPayment(String ticketId)
+    {
+        for (Ticket t : paidTickets) {
+            if (t.getTicketId().equals(ticketId)) {
+                PaymentSystem refund = new PaymentSystem("REFUND-" + ticketId, "Refund", t.getTotalFee());
+                refund.refundPayment(t.getTotalFee());
+                paidTickets.remove(t);
+                System.out.println("Refund of $" + String.format("%.2f", t.getTotalFee()) + " issued for ticket " + ticketId + ".");
+                return;
+            }
+        }
+        System.out.println("Paid ticket " + ticketId + " not found.");
     }
 
     public ArrayList<Vehicle> getParkedVehicles()   
