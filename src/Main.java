@@ -55,9 +55,7 @@ public class Main {
                     String vehicleId = scanner.nextLine().trim();
                     checkExit(vehicleId, scanner);
 
-                    System.out.print("Enter license plate: ");
-                    String plate = scanner.nextLine().trim();
-                    checkExit(plate, scanner);
+                    String plate = readLicensePlate(scanner, "Enter license plate: ");
 
                     System.out.print("Enter owner name: ");
                     String owner = scanner.nextLine().trim();
@@ -72,16 +70,18 @@ public class Main {
                             String fuelType = scanner.nextLine().trim();
                             checkExit(fuelType, scanner);
                             Car car = new Car(vehicleId, plate, owner, doors, fuelType);
-                            garage.parkVehicle(car, entryHour);
-                            System.out.println("Car added and parked successfully.");
+                            if (garage.parkVehicle(car, entryHour) != null)
+                                System.out.println("Car added and parked successfully.");
                             break;
                         }
                         case "2": {
                             int engineSize = readInt(scanner, "Enter engine size (cc): ");
                             boolean hasHelmetStorage = readBoolean(scanner, "Has helmet storage (true/false): ");
                             Motorcycle motorcycle = new Motorcycle(vehicleId, plate, owner, engineSize, hasHelmetStorage);
-                            garage.parkVehicle(motorcycle, entryHour);
-                            System.out.println("Motorcycle added and parked successfully.");
+                            if (garage.parkVehicle(motorcycle, entryHour) != null) {
+                                motorcycle.displayParkingMessage();
+                                System.out.println("Motorcycle added and parked successfully.");
+                            }
                             break;
                         }
                         case "3": {
@@ -91,8 +91,8 @@ public class Main {
                             checkExit(truckType, scanner);
                             int axles = readInt(scanner, "Enter number of axles: ");
                             PickupTruck truck = new PickupTruck(vehicleId, plate, owner, payload, truckType, axles);
-                            garage.parkVehicle(truck, entryHour);
-                            System.out.println("Pickup Truck added and parked successfully.");
+                            if (garage.parkVehicle(truck, entryHour) != null)
+                                System.out.println("Pickup Truck added and parked successfully.");
                             break;
                         }
                         case "4": {
@@ -102,8 +102,8 @@ public class Main {
                             String charger = scanner.nextLine().trim();
                             checkExit(charger, scanner);
                             ElectricVehicle ev = new ElectricVehicle(vehicleId, plate, owner, battery, range, charger);
-                            garage.parkVehicle(ev, entryHour);
-                            System.out.println("Electric Vehicle added and parked successfully.");
+                            if (garage.parkVehicle(ev, entryHour) != null)
+                                System.out.println("Electric Vehicle added and parked successfully.");
                             break;
                         }
                         default:
@@ -174,22 +174,28 @@ public class Main {
                     }
 
                     Vehicle selectedVehicle = garage.getParkedVehicles().get(index);
-                    System.out.println("1. Update License Plate");
-                    System.out.println("2. Update Owner Name");
+                    System.out.println("1. View Vehicle Details");
+                    System.out.println("2. Update License Plate");
+                    System.out.println("3. Update Owner Name");
                     String fieldChoice = scanner.nextLine().trim();
                     checkExit(fieldChoice, scanner);
 
                     if (fieldChoice.equals("1")) {
-                        System.out.print("Enter new license plate: ");
-                        String newPlate = scanner.nextLine().trim();
-                        checkExit(newPlate, scanner);
+                        selectedVehicle.displayVehicleInfo();
+                        if (selectedVehicle instanceof ElectricVehicle) {
+                            ElectricVehicle ev = (ElectricVehicle) selectedVehicle;
+                            System.out.println(ev.checkBatteryLevel());
+                            ev.requestChargingSpot();
+                        }
+                    } else if (fieldChoice.equals("2")) {
+                        String newPlate = readLicensePlate(scanner, "Enter new license plate: ");
                         try {
                             selectedVehicle.setLicensePlate(newPlate);
                             System.out.println("License plate updated to: " + selectedVehicle.getLicensePlate());
                         } catch (InvalidLicensePlateException e) {
                             System.out.println("Error: " + e.getMessage());
                         }
-                    } else if (fieldChoice.equals("2")) {
+                    } else if (fieldChoice.equals("3")) {
                         System.out.print("Enter new owner name: ");
                         String newOwner = scanner.nextLine().trim();
                         checkExit(newOwner, scanner);
@@ -257,6 +263,21 @@ public class Main {
             if (input.equals("true"))       return true;
             else if (input.equals("false")) return false;
             else System.out.println("Invalid input. Please enter true or false.");
+        }
+    }
+
+    public static String readLicensePlate(Scanner scanner, String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+            checkExit(input, scanner);
+            try {
+                if (input.isBlank()) throw new InvalidLicensePlateException("License plate cannot be blank.");
+                if (input.length() < 5) throw new InvalidLicensePlateException("License plate must be at least 5 characters long.");
+                return input;
+            } catch (InvalidLicensePlateException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
         }
     }
 }
