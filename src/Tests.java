@@ -5,16 +5,142 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Tests {
 
     private PickupTruck truck;
+    private Car car;
+    private Motorcycle motorcycle;
+    private ElectricVehicle ev;
     private ParkingSpot spot;
     private Ticket ticket;
     private ParkingGarage garage;
 
     @BeforeEach
     void setUp() {
-        truck  = new PickupTruck("T001", "TRUCK-01", "Arjun", 5, "Pickup", 2);
-        spot   = new ParkingSpot("S01");
-        ticket = new Ticket("TKT-0001", truck, spot, 8);
-        garage = new ParkingGarage("Test Garage");
+        truck      = new PickupTruck("T001", "TRUCK-01", "Arjun", 5, "Pickup", 2);
+        car        = new Car("C001", "ABC123", "Gunraj", 4, "Gas");
+        motorcycle = new Motorcycle("M001", "XYZ999", "Hasham", 300, true);
+        ev         = new ElectricVehicle("E001", "EV-001", "Arjun", 15, 200, "DC Fast");
+        spot       = new ParkingSpot("S01");
+        ticket     = new Ticket("TKT-0001", truck, spot, 8);
+        garage     = new ParkingGarage("Test Garage");
+    }
+
+        // ===== CAR TESTS =====
+
+    @Test void car_parkingFee() {
+        assertEquals(10.00, car.calculateParkingFee(2), 0.001);  // $5/hr * 2
+        assertEquals(5.00,  car.calculateParkingFee(0), 0.001);  // min 1 hour
+        assertEquals(5.00,  car.calculateParkingFee(1), 0.001);
+    }
+
+    @Test void car_parkingFlow() {
+        car.parkVehicle(spot);
+        assertFalse(spot.checkAvailability());
+        assertTrue(car.isParked());
+        assertEquals(car, spot.getAssignedVehicle());
+
+        car.leaveSpot(spot);
+        assertTrue(spot.checkAvailability());
+        assertFalse(car.isParked());
+    }
+
+    @Test void car_constructorAndGetters() {
+        assertEquals("C001", car.getVehicleId());
+        assertEquals("ABC123", car.getLicensePlate());
+        assertEquals("Gunraj", car.getOwnerName());
+        assertEquals(4, car.getNumberOfDoors());
+        assertEquals("Gas", car.getFuelType());
+        assertFalse(car.isParked());
+    }
+
+    @Test void car_outputMethods() {
+        assertTrue(car.toString().contains("ABC123"));
+        assertDoesNotThrow(() -> car.displayVehicleInfo());
+    }
+
+    // ===== MOTORCYCLE TESTS =====
+
+    @Test void motorcycle_parkingFee() {
+        assertEquals(9.00, motorcycle.calculateParkingFee(3), 0.001);  // $3/hr * 3
+        assertEquals(3.00, motorcycle.calculateParkingFee(0), 0.001);  // min 1 hour
+        assertEquals(3.00, motorcycle.calculateParkingFee(1), 0.001);
+    }
+
+    @Test void motorcycle_parkingFlow() {
+        motorcycle.parkVehicle(spot);
+        assertTrue(spot.isOccupied());
+        assertTrue(motorcycle.isParked());
+
+        motorcycle.leaveSpot(spot);
+        assertFalse(spot.isOccupied());
+        assertFalse(motorcycle.isParked());
+    }
+
+    @Test void motorcycle_constructorAndGetters() {
+        assertEquals("M001", motorcycle.getVehicleId());
+        assertEquals(300, motorcycle.getEngineSize());
+        assertTrue(motorcycle.hasHelmetStorage());
+    }
+
+    // ===== ELECTRIC VEHICLE TESTS =====
+
+    @Test void ev_parkingFee() {
+        assertEquals(8.00, ev.calculateParkingFee(2), 0.001);   // $4/hr * 2
+        assertEquals(4.00, ev.calculateParkingFee(0), 0.001);   // min 1 hour
+    }
+
+    @Test void ev_parkingFlow() {
+        ev.parkVehicle(spot);
+        assertTrue(spot.isOccupied());
+        assertTrue(ev.isParked());
+
+        ev.leaveSpot(spot);
+        assertFalse(spot.isOccupied());
+        assertFalse(ev.isParked());
+    }
+
+    @Test void ev_batteryAndCharging() {
+        // battery level 15 → needsCharging = true
+        assertTrue(ev.isNeedsCharging());
+        assertDoesNotThrow(() -> ev.requestChargingSpot());
+
+        // battery update
+        ev.setBatteryLevel(80);
+        assertFalse(ev.isNeedsCharging());
+        assertTrue(ev.checkBatteryLevel().contains("high"));
+    }
+
+    // ===== TICKET TESTS (Car) =====
+
+    @Test void ticket_carFeeCalculation() {
+        ParkingSpot carSpot = new ParkingSpot("S02");
+        car.parkVehicle(carSpot);
+        Ticket carTicket = new Ticket("TKT-0002", car, carSpot, 10);
+
+        double fee = carTicket.calculateParkingFee(12); // 2 hrs * $5 = $10
+        assertEquals(10.00, fee, 0.001);
+    }
+
+    // ===== EXCEPTION TESTS =====
+
+    @Test void exception_spotOccupied() {
+        spot.assignVehicle(car);
+        assertThrows(SpotOccupiedException.class, () -> spot.assignVehicle(truck));
+    }
+
+    @Test void exception_invalidPayment() {
+        PaymentSystem ps = new PaymentSystem("P1", "Cash", 0);
+        assertThrows(InvalidPaymentException.class, () -> ps.processPayment(-5.0));
+    }
+
+    @Test void exception_vehicleNotFound() {
+        assertThrows(VehicleNotFoundException.class,
+                () -> garage.removeVehicle("TKT-FAKE", 10, "Cash"));
+    }
+
+    @Test void exception_invalidLicensePlate() {
+        assertThrows(InvalidLicensePlateException.class,
+                () -> car.setLicensePlate(""));
+        assertThrows(InvalidLicensePlateException.class,
+                () -> car.setLicensePlate("AB")); // too short (< 3 chars)
     }
 
     @Test void truck_constructorAndGetters() {
