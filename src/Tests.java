@@ -258,4 +258,84 @@ public class Tests {
         p.leaveSpot(spot);
         assertFalse(spot.isOccupied());
     }
+
+    // ===== TYPED SPOT TESTS =====
+
+    @Test void spotType_defaultIsStandard() {
+        ParkingSpot defaultSpot = new ParkingSpot("X1");
+        assertEquals("STANDARD", defaultSpot.getSpotType());
+    }
+
+    @Test void spotType_typedConstructor() {
+        ParkingSpot evSpot    = new ParkingSpot("E1", "EV");
+        ParkingSpot largeSpot = new ParkingSpot("L1", "LARGE");
+        assertEquals("EV",    evSpot.getSpotType());
+        assertEquals("LARGE", largeSpot.getSpotType());
+        assertTrue(evSpot.toString().contains("EV"));
+        assertTrue(largeSpot.toString().contains("LARGE"));
+    }
+
+    @Test void spotType_evParksInEvSpot() {
+        ParkingGarage typedGarage = new ParkingGarage("Typed Garage");
+        typedGarage.addParkingSpot(new ParkingSpot("S1", "STANDARD"));
+        typedGarage.addParkingSpot(new ParkingSpot("S2", "EV"));
+        typedGarage.addParkingSpot(new ParkingSpot("S3", "LARGE"));
+
+        Ticket evTicket = typedGarage.parkVehicle(ev, 8);
+        assertNotNull(evTicket);
+        assertEquals("EV", evTicket.getParkingSpot().getSpotType());
+    }
+
+    @Test void spotType_truckParksInLargeSpot() {
+        ParkingGarage typedGarage = new ParkingGarage("Typed Garage");
+        typedGarage.addParkingSpot(new ParkingSpot("S1", "STANDARD"));
+        typedGarage.addParkingSpot(new ParkingSpot("S2", "EV"));
+        typedGarage.addParkingSpot(new ParkingSpot("S3", "LARGE"));
+
+        Ticket truckTicket = typedGarage.parkVehicle(truck, 8);
+        assertNotNull(truckTicket);
+        assertEquals("LARGE", truckTicket.getParkingSpot().getSpotType());
+    }
+
+    @Test void spotType_carParksInStandardSpot() {
+        ParkingGarage typedGarage = new ParkingGarage("Typed Garage");
+        typedGarage.addParkingSpot(new ParkingSpot("S1", "STANDARD"));
+        typedGarage.addParkingSpot(new ParkingSpot("S2", "EV"));
+        typedGarage.addParkingSpot(new ParkingSpot("S3", "LARGE"));
+
+        Ticket carTicket = typedGarage.parkVehicle(car, 8);
+        assertNotNull(carTicket);
+        assertEquals("STANDARD", carTicket.getParkingSpot().getSpotType());
+    }
+
+    @Test void spotType_fallbackWhenPreferredFull() {
+        // Only STANDARD spots available — EV should fall back to STANDARD
+        ParkingGarage typedGarage = new ParkingGarage("Typed Garage");
+        typedGarage.addParkingSpot(new ParkingSpot("S1", "STANDARD"));
+        typedGarage.addParkingSpot(new ParkingSpot("S2", "STANDARD"));
+
+        Ticket evTicket = typedGarage.parkVehicle(ev, 8);
+        assertNotNull(evTicket); // should still park via fallback
+        assertEquals("STANDARD", evTicket.getParkingSpot().getSpotType());
+    }
+
+    @Test void spotType_findAvailableSpotOfType() {
+        ParkingGarage typedGarage = new ParkingGarage("Typed Garage");
+        ParkingSpot evSpot = new ParkingSpot("E1", "EV");
+        typedGarage.addParkingSpot(new ParkingSpot("S1", "STANDARD"));
+        typedGarage.addParkingSpot(evSpot);
+
+        assertEquals(evSpot, typedGarage.findAvailableSpotOfType("EV"));
+        assertNotNull(typedGarage.findAvailableSpotOfType("LARGE")); // no LARGE → fallback returns any available
+    }
+
+    @Test void displayGrid_doesNotThrow() {
+        ParkingGarage typedGarage = new ParkingGarage("Typed Garage");
+        typedGarage.addParkingSpot(new ParkingSpot("S1", "STANDARD"));
+        typedGarage.addParkingSpot(new ParkingSpot("S2", "EV"));
+        typedGarage.addParkingSpot(new ParkingSpot("S3", "LARGE"));
+        typedGarage.parkVehicle(car, 8);
+        typedGarage.parkVehicle(ev, 8);
+        assertDoesNotThrow(() -> typedGarage.displayGrid());
+    }
 }
