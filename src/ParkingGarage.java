@@ -68,6 +68,48 @@ public class ParkingSpot
         if (isOccupied()) System.out.println("Vehicle  : " + assignedVehicle.getLicensePlate());
     }
 
+    public void displayGrid()
+    {
+        final int COLS = 5;
+        System.out.println("========================================");
+        System.out.println("   GARAGE GRID: " + garageName);
+        System.out.println("   [STD] = Standard  [EV] = Electric  [LG] = Large");
+        System.out.println("========================================");
+
+        for (int i = 0; i < parkingSpots.size(); i++)
+        {
+            ParkingSpot spot = parkingSpots.get(i);
+
+            // spot type label
+            String typeTag;
+            switch (spot.getSpotType()) {
+                case "EV":    typeTag = "EV "; break;
+                case "LARGE": typeTag = "LG "; break;
+                default:      typeTag = "STD"; break;
+            }
+
+            // occupancy label
+            String occupant;
+            if (!spot.isOccupied()) {
+                occupant = "----";
+            } else {
+                Vehicle v = spot.getAssignedVehicle();
+                if      (v instanceof ElectricVehicle) occupant = "EV  ";
+                else if (v instanceof PickupTruck)      occupant = "TRCK";
+                else if (v instanceof Motorcycle)       occupant = "MOTO";
+                else                                    occupant = "CAR ";
+            }
+
+            System.out.printf("[%s|%s:%s]", typeTag, spot.getSpotId(), occupant);
+
+            if ((i + 1) % COLS == 0) System.out.println();
+        }
+
+        // newline if last row wasn't full
+        if (parkingSpots.size() % COLS != 0) System.out.println();
+        System.out.println("========================================");
+    }
+
     @Override
     public String toString()
     {

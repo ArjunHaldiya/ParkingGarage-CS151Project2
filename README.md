@@ -50,11 +50,6 @@ javac *.java
 java Main
 ```
 
-### Run Tests (with JUnit 5 on classpath)
-```bash
-javac -cp .:junit-platform-console-standalone.jar *.java
-java -cp .:junit-platform-console-standalone.jar org.junit.platform.console.ConsoleLauncher --scan-classpath
-```
 
 ## Usage
 The interactive menu supports the following operations:
@@ -63,18 +58,19 @@ The interactive menu supports the following operations:
 3. **Add Pickup Truck** — enter vehicle details and park immediately
 4. **Add Electric Vehicle** — enter vehicle details and park immediately
 5. **View Available Spots** — list all unoccupied spots
-6. **Park Vehicle** — see active vehicles in garage
+6. **View Active Vehicles** — list all vehicles currently parked
 7. **Calculate Fee and Pay** — select a ticket, enter exit hour and payment method
-8. **View Active Tickets** — display all open tickets
-9. **View Garage Status** — summary of occupancy
-10. **Exit**
+8. **View Tickets** — display all open tickets with details
+9. **Update Parked Vehicle** — correct a vehicle's license plate or owner name
+10. **View Garage Status** — full summary of occupancy and active tickets
+11. **Exit**
 
 > Type `EXIT` at any prompt to quit immediately.
 
 ## Team Contributions
 | Member | Classes |
 |---|---|
-| Arjun Haldiya | `PickupTruck`, `Ticket`, `Tests` |
+| Arjun Haldiya |ParkingGarage`  ,`PickupTruck`, `Ticket`, `Tests` |
 | Fnu Hasham | `ParkingGarage`, `PaymentSystem`, `ParkingGarageTest` |
-| Gunraj | `Car`, `Motorcycle`, `ElectricVehicle`, `ParkingSpot`, `Main` |
+| Gunraj | `Car`, `Motorcycle`, `ElectricVehicle`, `ParkingSpot`|
 | All | `Vehicle` (abstract), `Parkable` (interface), Exception classes |
