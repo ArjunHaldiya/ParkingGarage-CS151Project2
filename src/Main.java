@@ -6,27 +6,29 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        //central garage manager — pre-loaded with 3 spots
+        //central garage manager — pre-loaded with 9 typed spots
         ParkingGarage garage = new ParkingGarage("Main Garage");
-        garage.addParkingSpot(new ParkingSpot("S1"));
-        garage.addParkingSpot(new ParkingSpot("S2"));
-        garage.addParkingSpot(new ParkingSpot("S3"));
+        garage.addParkingSpot(new ParkingSpot("S1", "STANDARD"));
+        garage.addParkingSpot(new ParkingSpot("S2", "STANDARD"));
+        garage.addParkingSpot(new ParkingSpot("S3", "STANDARD"));
+        garage.addParkingSpot(new ParkingSpot("S4", "STANDARD"));
+        garage.addParkingSpot(new ParkingSpot("S5", "STANDARD"));
+        garage.addParkingSpot(new ParkingSpot("S6", "EV"));
+        garage.addParkingSpot(new ParkingSpot("S7", "EV"));
+        garage.addParkingSpot(new ParkingSpot("S8", "LARGE"));
+        garage.addParkingSpot(new ParkingSpot("S9", "LARGE"));
 
         boolean running = true;
 
         while (running) {
             System.out.println("\n===== Parking Garage System =====");
-            System.out.println("1. Add Car");
-            System.out.println("2. Add Motorcycle");
-            System.out.println("3. Add Pickup Truck");
-            System.out.println("4. Add Electric Vehicle");
-            System.out.println("5. View Available Spots");
-            System.out.println("6. Park Vehicle");
-            System.out.println("7. Calculate Fee and Pay");
-            System.out.println("8. View Tickets");
-            System.out.println("9. Update Parked Vehicle");
-            System.out.println("10. View Garage Status");
-            System.out.println("11. Exit");
+            System.out.println("1. Add Vehicle");
+            System.out.println("2. View Available Spots");
+            System.out.println("3. Calculate Fee and Pay");
+            System.out.println("4. View Tickets");
+            System.out.println("5. Update Parked Vehicle");
+            System.out.println("6. View Garage Status");
+            System.out.println("7. Exit");
             System.out.println("(Type EXIT at any prompt to quit)");
             System.out.print("Enter your choice: ");
 
@@ -34,141 +36,87 @@ public class Main {
             checkExit(choice, scanner);
 
             switch (choice) {
+
                 case "1": {
                     if (garage.getParkedVehicles().size() >= ParkingGarage.MAXIMUM_INSTANCES) {
                         System.out.println("Max vehicles reached."); break;
                     }
+
+                    System.out.println("Select vehicle type:");
+                    System.out.println("  1. Car");
+                    System.out.println("  2. Motorcycle");
+                    System.out.println("  3. Pickup Truck");
+                    System.out.println("  4. Electric Vehicle");
+                    System.out.print("Enter type: ");
+                    String typeChoice = scanner.nextLine().trim();
+                    checkExit(typeChoice, scanner);
+
                     System.out.print("Enter vehicle ID: ");
-                    String carId = scanner.nextLine().trim();
-                    checkExit(carId, scanner);
+                    String vehicleId = scanner.nextLine().trim();
+                    checkExit(vehicleId, scanner);
 
                     System.out.print("Enter license plate: ");
-                    String carPlate = scanner.nextLine().trim();
-                    checkExit(carPlate, scanner);
+                    String plate = scanner.nextLine().trim();
+                    checkExit(plate, scanner);
 
                     System.out.print("Enter owner name: ");
-                    String carOwner = scanner.nextLine().trim();
-                    checkExit(carOwner, scanner);
-
-                    int doors = readInt(scanner, "Enter number of doors: ");
-
-                    System.out.print("Enter fuel type: ");
-                    String fuelType = scanner.nextLine().trim();
-                    checkExit(fuelType, scanner);
+                    String owner = scanner.nextLine().trim();
+                    checkExit(owner, scanner);
 
                     int entryHour = readIntInRange(scanner, "Enter entry hour (0-23): ", 0, 23);
 
-                    Car car = new Car(carId, carPlate, carOwner, doors, fuelType);
-                    garage.parkVehicle(car, entryHour);
-                    System.out.println("Car added and parked successfully.");
-                    break;
-                }
-
-                case "2": {
-                    if (garage.getParkedVehicles().size() >= ParkingGarage.MAXIMUM_INSTANCES) {
-                        System.out.println("Max vehicles reached."); break;
+                    switch (typeChoice) {
+                        case "1": {
+                            int doors = readInt(scanner, "Enter number of doors: ");
+                            System.out.print("Enter fuel type: ");
+                            String fuelType = scanner.nextLine().trim();
+                            checkExit(fuelType, scanner);
+                            Car car = new Car(vehicleId, plate, owner, doors, fuelType);
+                            garage.parkVehicle(car, entryHour);
+                            System.out.println("Car added and parked successfully.");
+                            break;
+                        }
+                        case "2": {
+                            int engineSize = readInt(scanner, "Enter engine size (cc): ");
+                            boolean hasHelmetStorage = readBoolean(scanner, "Has helmet storage (true/false): ");
+                            Motorcycle motorcycle = new Motorcycle(vehicleId, plate, owner, engineSize, hasHelmetStorage);
+                            garage.parkVehicle(motorcycle, entryHour);
+                            System.out.println("Motorcycle added and parked successfully.");
+                            break;
+                        }
+                        case "3": {
+                            int payload = readInt(scanner, "Enter payload capacity (tons): ");
+                            System.out.print("Enter truck type (Pickup/Semi/Flatbed): ");
+                            String truckType = scanner.nextLine().trim();
+                            checkExit(truckType, scanner);
+                            int axles = readInt(scanner, "Enter number of axles: ");
+                            PickupTruck truck = new PickupTruck(vehicleId, plate, owner, payload, truckType, axles);
+                            garage.parkVehicle(truck, entryHour);
+                            System.out.println("Pickup Truck added and parked successfully.");
+                            break;
+                        }
+                        case "4": {
+                            int battery = readIntInRange(scanner, "Enter battery level (0-100): ", 0, 100);
+                            int range = readInt(scanner, "Enter range (miles): ");
+                            System.out.print("Enter charger type (Level 1/Level 2/DC Fast): ");
+                            String charger = scanner.nextLine().trim();
+                            checkExit(charger, scanner);
+                            ElectricVehicle ev = new ElectricVehicle(vehicleId, plate, owner, battery, range, charger);
+                            garage.parkVehicle(ev, entryHour);
+                            System.out.println("Electric Vehicle added and parked successfully.");
+                            break;
+                        }
+                        default:
+                            System.out.println("Invalid vehicle type.");
                     }
-                    System.out.print("Enter vehicle ID: ");
-                    String bikeId = scanner.nextLine().trim();
-                    checkExit(bikeId, scanner);
-
-                    System.out.print("Enter license plate: ");
-                    String bikePlate = scanner.nextLine().trim();
-                    checkExit(bikePlate, scanner);
-
-                    System.out.print("Enter owner name: ");
-                    String bikeOwner = scanner.nextLine().trim();
-                    checkExit(bikeOwner, scanner);
-
-                    int engineSize = readInt(scanner, "Enter engine size (cc): ");
-                    boolean hasHelmetStorage = readBoolean(scanner, "Has helmet storage (true/false): ");
-                    int entryHour = readIntInRange(scanner, "Enter entry hour (0-23): ", 0, 23);
-
-                    Motorcycle motorcycle = new Motorcycle(bikeId, bikePlate, bikeOwner, engineSize, hasHelmetStorage);
-                    garage.parkVehicle(motorcycle, entryHour);
-                    System.out.println("Motorcycle added and parked successfully.");
                     break;
                 }
 
-                case "3": {
-                    if (garage.getParkedVehicles().size() >= ParkingGarage.MAXIMUM_INSTANCES) {
-                        System.out.println("Max vehicles reached."); break;
-                    }
-                    System.out.print("Enter vehicle ID: ");
-                    String truckId = scanner.nextLine().trim();
-                    checkExit(truckId, scanner);
-
-                    System.out.print("Enter license plate: ");
-                    String truckPlate = scanner.nextLine().trim();
-                    checkExit(truckPlate, scanner);
-
-                    System.out.print("Enter owner name: ");
-                    String truckOwner = scanner.nextLine().trim();
-                    checkExit(truckOwner, scanner);
-
-                    int payload = readInt(scanner, "Enter payload capacity (tons): ");
-
-                    System.out.print("Enter truck type (Pickup/Semi/Flatbed): ");
-                    String truckType = scanner.nextLine().trim();
-                    checkExit(truckType, scanner);
-
-                    int axles = readInt(scanner, "Enter number of axles: ");
-                    int entryHour = readIntInRange(scanner, "Enter entry hour (0-23): ", 0, 23);
-
-                    PickupTruck truck = new PickupTruck(truckId, truckPlate, truckOwner, payload, truckType, axles);
-                    garage.parkVehicle(truck, entryHour);
-                    System.out.println("Pickup Truck added and parked successfully.");
-                    break;
-                }
-
-                case "4": {
-                    if (garage.getParkedVehicles().size() >= ParkingGarage.MAXIMUM_INSTANCES) {
-                        System.out.println("Max vehicles reached."); break;
-                    }
-                    System.out.print("Enter vehicle ID: ");
-                    String evId = scanner.nextLine().trim();
-                    checkExit(evId, scanner);
-
-                    System.out.print("Enter license plate: ");
-                    String evPlate = scanner.nextLine().trim();
-                    checkExit(evPlate, scanner);
-
-                    System.out.print("Enter owner name: ");
-                    String evOwner = scanner.nextLine().trim();
-                    checkExit(evOwner, scanner);
-
-                    int battery = readIntInRange(scanner, "Enter battery level (0-100): ", 0, 100);
-                    int range   = readInt(scanner, "Enter range (miles): ");
-
-                    System.out.print("Enter charger type (Level 1/Level 2/DC Fast): ");
-                    String charger = scanner.nextLine().trim();
-                    checkExit(charger, scanner);
-
-                    int entryHour = readIntInRange(scanner, "Enter entry hour (0-23): ", 0, 23);
-
-                    ElectricVehicle ev = new ElectricVehicle(evId, evPlate, evOwner, battery, range, charger);
-                    garage.parkVehicle(ev, entryHour);
-                    System.out.println("Electric Vehicle added and parked successfully.");
-                    break;
-                }
-
-                case "5":
+                case "2":
                     garage.displayAvailableSpots();
                     break;
 
-                case "6":
-                    //vehicles are parked automatically when added via options 1-4
-                    if (garage.getParkedVehicles().isEmpty()) {
-                        System.out.println("No vehicles currently parked.");
-                    } else {
-                        System.out.println("Active vehicles in garage: " + garage.getParkedVehicles().size());
-                        for (int i = 0; i < garage.getParkedVehicles().size(); i++) {
-                            System.out.println((i + 1) + ". " + garage.getParkedVehicles().get(i));
-                        }
-                    }
-                    break;
-
-                case "7": {
+                case "3": {
                     if (garage.getActiveTickets().isEmpty()) {
                         System.out.println("No active tickets found."); break;
                     }
@@ -187,19 +135,19 @@ public class Main {
                     int exitHour = readIntInRange(scanner, "Enter exit hour (0-23): ", 0, 23);
 
                     System.out.print("Enter payment method (Cash/Card): ");
-                    String method = scanner.nextLine().trim();
-                    checkExit(method, scanner);
+                    String paymentMethod = scanner.nextLine().trim();
+                    checkExit(paymentMethod, scanner);
 
                     //VehicleNotFoundException is caught here if ticket ID is invalid
                     try {
-                        garage.removeVehicle(selectedTicket.getTicketId(), exitHour, method);
+                        garage.removeVehicle(selectedTicket.getTicketId(), exitHour, paymentMethod);
                     } catch (VehicleNotFoundException e) {
                         System.out.println("Error: " + e.getMessage());
                     }
                     break;
                 }
 
-                case "8":
+                case "4":
                     if (garage.getActiveTickets().isEmpty()) {
                         System.out.println("No tickets available.");
                     } else {
@@ -209,7 +157,7 @@ public class Main {
                     }
                     break;
 
-                case "9": {
+                case "5": {
                     //allow user to correct a parked vehicle's license plate or owner name
                     if (garage.getParkedVehicles().isEmpty()) {
                         System.out.println("No vehicles currently parked."); break;
@@ -225,18 +173,19 @@ public class Main {
                         System.out.println("Invalid selection."); break;
                     }
 
-                    Vehicle v = garage.getParkedVehicles().get(index);
+                    Vehicle selectedVehicle = garage.getParkedVehicles().get(index);
                     System.out.println("1. Update License Plate");
                     System.out.println("2. Update Owner Name");
                     String fieldChoice = scanner.nextLine().trim();
+                    checkExit(fieldChoice, scanner);
 
                     if (fieldChoice.equals("1")) {
                         System.out.print("Enter new license plate: ");
                         String newPlate = scanner.nextLine().trim();
                         checkExit(newPlate, scanner);
                         try {
-                            v.setLicensePlate(newPlate);
-                            System.out.println("License plate updated to: " + v.getLicensePlate());
+                            selectedVehicle.setLicensePlate(newPlate);
+                            System.out.println("License plate updated to: " + selectedVehicle.getLicensePlate());
                         } catch (InvalidLicensePlateException e) {
                             System.out.println("Error: " + e.getMessage());
                         }
@@ -244,21 +193,22 @@ public class Main {
                         System.out.print("Enter new owner name: ");
                         String newOwner = scanner.nextLine().trim();
                         checkExit(newOwner, scanner);
-                        v.setOwnerName(newOwner);
-                        System.out.println("Owner updated to: " + v.getOwnerName());
+                        selectedVehicle.setOwnerName(newOwner);
+                        System.out.println("Owner updated to: " + selectedVehicle.getOwnerName());
                     } else {
                         System.out.println("Invalid option.");
                     }
                     break;
                 }
 
-                case "10":
+                case "6":
+                    garage.displayGrid();
                     garage.displayGarageStatus();
                     break;
 
-                case "11":
+                case "7":
                     running = false;
-                    System.out.println("Exiting system...");
+                    System.out.println("Exiting system. Goodbye!");
                     break;
 
                 default:
@@ -299,9 +249,7 @@ public class Main {
         }
     }
 
-    public static boolean readBoolean(Scanner scanner, String prompt) 
-    
-    {
+    public static boolean readBoolean(Scanner scanner, String prompt) {
         while (true) {
             System.out.print(prompt);
             String input = scanner.nextLine().trim().toLowerCase();
