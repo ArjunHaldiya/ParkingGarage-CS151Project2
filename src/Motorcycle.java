@@ -1,50 +1,58 @@
+
 public class Motorcycle extends Vehicle implements Parkable {
     private int engineSize;
     private boolean hasHelmetStorage;
 
-    public Motorcycle(String vehicleId, String licensePlate, String ownerName, int engineSize, boolean hasHelmetStorage) {
+    public Motorcycle(String vehicleId, String licensePlate, String ownerName,
+                      int engineSize, boolean hasHelmetStorage) {
         super(vehicleId, licensePlate, ownerName);
         this.engineSize = engineSize;
         this.hasHelmetStorage = hasHelmetStorage;
     }
 
-    public int getEngineSize() {
-        return engineSize;
+    public int getEngineSize()      
+        { return engineSize; 
+
+        }
+    public boolean hasHelmetStorage()   
+    { return hasHelmetStorage; 
+        
     }
 
-    public boolean hasHelmetStorage() {
-        return hasHelmetStorage;
-    }
+    public void setEngineSize(int engineSize) 
+        { this.engineSize = engineSize; 
 
-    public void setEngineSize(int engineSize) {
-        this.engineSize = engineSize;
-    }
+        }
+        
+    public void setHasHelmetStorage(boolean hasHelmetStorage) 
+    { this.hasHelmetStorage = hasHelmetStorage; 
 
-    public void setHasHelmetStorage(boolean hasHelmetStorage) {
-        this.hasHelmetStorage = hasHelmetStorage;
     }
 
     @Override
-    public void parkVehicle(ParkingSpot spot) {
+    public void parkVehicle(ParkingSpot spot)
+     {
         spot.assignVehicle(this);
         setParked(true);
     }
 
     @Override
-    public void leaveSpot(ParkingSpot spot) {
+    public void leaveSpot(ParkingSpot spot) 
+    {
         spot.removeVehicle();
         setParked(false);
     }
 
+    //minimum 1 hour billing
     @Override
-    public double calculateParkingFee(int hours) {
-        if (hours <= 0) {
-            return 0;
-        }
-        return hours * 3.0;
+    public double calculateParkingFee(int hours) 
+    {
+        int billableHours = Math.max(1, hours);
+        return billableHours * 3.0;
     }
 
-    public boolean canFitInSpot(String spotType) {
+    public boolean canFitInSpot(String spotType) 
+    {
         return spotType.equalsIgnoreCase("compact") || spotType.equalsIgnoreCase("motorcycle");
     }
 
@@ -54,18 +62,14 @@ public class Motorcycle extends Vehicle implements Parkable {
 
     public void printReceipt(int hours) {
         double fee = calculateParkingFee(hours);
-        if (fee == 0) {
-            System.out.println("Invalid parking hours.");
-        } else {
-            System.out.println("Motorcycle parking fee: $" + fee);
-        }
+        System.out.println("Motorcycle parking fee: $" + fee);
     }
 
     @Override
     public void displayVehicleInfo() {
         super.displayVehicleInfo();
-        System.out.println("Engine Size: " + engineSize);
-        System.out.println("Helmet Storage: " + hasHelmetStorage);
+        System.out.println("Engine Size     : " + engineSize + "cc");
+        System.out.println("Helmet Storage  : " + hasHelmetStorage);
     }
 
     @Override

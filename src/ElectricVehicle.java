@@ -1,105 +1,111 @@
 //Gunraj
 
-public class ElectricVehicle extends Vehicle implements Parkable 
-{
-    private int batteryLevel;
-    private boolean isCharging;
 
-    public ElectricVehicle(String vehicleId, String licensePlate, String ownerName,
-                           int batteryLevel, boolean isCharging) 
-    {
+public class ElectricVehicle extends Vehicle implements Parkable {
+    private int batteryLevel;
+    private int range;
+    private String chargerType;
+    private boolean needsCharging;
+
+    public ElectricVehicle(String vehicleId, String licensePlate, String ownerName,int batteryLevel, int range, String chargerType) {
         super(vehicleId, licensePlate, ownerName);
         this.batteryLevel = batteryLevel;
-        this.isCharging = isCharging;
+        this.range = range;
+        this.chargerType = chargerType;
+        this.needsCharging = batteryLevel < 20;
     }
 
-    public int getBatteryLevel() 
-    {
-        return batteryLevel;
-    }
-
-    public boolean isCharging() 
-    {
-        return isCharging;
-    }
-
-    public String checkBatteryLevel() 
-    {
-        if (batteryLevel >= 80) 
-        {
-            return "Battery is high: " + batteryLevel + "%";
-        } else if (batteryLevel >= 20) 
-        {
-            return "Battery is moderate: " + batteryLevel + "%";
-        } else 
-        {
-            return "Battery is low: " + batteryLevel + "%";
+    public int getBatteryLevel()  
+      {
+         return batteryLevel;
+        
         }
+    public int getRange()          
+     { return range; 
+
+     }
+    public String getChargerType() 
+
+     { return chargerType;
+
+      }
+    public boolean isNeedsCharging() 
+
+    { return needsCharging; 
+
     }
 
-    public void setBatteryLevel(int batteryLevel) 
-    {
+    public void setBatteryLevel(int batteryLevel) {
         if (batteryLevel >= 0 && batteryLevel <= 100) {
-            this.batteryLevel = batteryLevel;
+           this.batteryLevel = batteryLevel;
+            this.needsCharging = batteryLevel < 20;
+        }
+    }
+    public void setRange(int range) 
+     {
+         this.range = range; 
+         
+        }
+
+    public void setChargerType(String chargerType)
+     { 
+        this.chargerType = chargerType; 
+
+     }
+    public void setNeedsCharging(boolean needsCharging) { this.needsCharging = needsCharging; }
+
+    public String checkBatteryLevel() {
+        if (batteryLevel >= 80) {
+            return "Battery is high: " + batteryLevel + "%";
+        } else if (batteryLevel >= 20) {
+            return "Battery is moderate: " + batteryLevel + "%";
+        } else {
+            return "Battery is low: " + batteryLevel + "% — charging recommended";
         }
     }
 
-    public void setCharging(boolean charging) 
-    {
-        isCharging = charging;
-    }
-
-    @Override
-    public void parkVehicle(ParkingSpot spot) 
-    {
-        if (spot != null && spot.checkAvailability()) {
-            spot.assignVehicle(this);
-            setParked(true);
+    public void requestChargingSpot() {
+        if (needsCharging) {
+            System.out.println(getLicensePlate() + " is requesting a " + chargerType + " charging spot.");
+        } else {
+            System.out.println(getLicensePlate() + " does not need charging.");
         }
     }
 
     @Override
-    public void leaveSpot(ParkingSpot spot) 
-    {
-        if (spot != null) {
-            spot.removeVehicle();
-            setParked(false);
-        }
+    public void parkVehicle(ParkingSpot spot) {
+        spot.assignVehicle(this);
+        setParked(true);
     }
 
     @Override
-    //assming EV's would get a discount and following the same format as the other classes
-    public double calculateParkingFee(int hours) 
-    {
+    public void leaveSpot(ParkingSpot spot) {
+        spot.removeVehicle();
+        setParked(false);
+    }
+
+    //assuming EVs get a slight discount
+    @Override
+    public double calculateParkingFee(int hours) {
         int billableHours = Math.max(1, hours);
         return billableHours * 4.0;
     }
 
     @Override
-    public void displayVehicleInfo() 
-    {
+    public void displayVehicleInfo() {
         super.displayVehicleInfo();
-        System.out.println("Battery Level: " + batteryLevel + "%");
-        System.out.println("Charging: " + isCharging);
+        System.out.println("Battery Level : " + batteryLevel + "%");
+        System.out.println("Range         : " + range + " miles");
+        System.out.println("Charger Type  : " + chargerType);
+        System.out.println("Needs Charge  : " + needsCharging);
     }
 
     @Override
-    public String toString() 
-    {
+    public String toString() {
         return "ElectricVehicle: " + super.toString() +
                ", Battery Level: " + batteryLevel +
-               ", Charging: " + isCharging +
+               ", Range: " + range + "mi" +
+               ", Charger: " + chargerType +
                ", Parked: " + isParked();
-    }
-
-    public void requestChargingSpot() 
-    {
-        if (batteryLevel < 20) 
-        {
-            System.out.println(getLicensePlate() + " needs charging.");
-        } else 
-        {
-            System.out.println(getLicensePlate() + " does not need charging.");
-        }
     }
 }
