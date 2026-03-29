@@ -326,7 +326,7 @@ public class Tests {
         typedGarage.addParkingSpot(evSpot);
 
         assertEquals(evSpot, typedGarage.findAvailableSpotOfType("EV"));
-        assertNull(typedGarage.findAvailableSpotOfType("LARGE")); // no LARGE → fallback returns any available
+        assertNotNull(typedGarage.findAvailableSpotOfType("LARGE")); // no LARGE → fallback returns any available
     }
 
     @Test void displayGrid_doesNotThrow() {

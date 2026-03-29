@@ -1,28 +1,38 @@
-// Name: Fnu Hasham
-//Gunraj - made some corrections, was missing the actual class and cleaned up code
-
-public class ParkingSpot 
+public class ParkingSpot
 {
     private String spotId;
+    private String spotType; // "STANDARD", "EV", "LARGE"
     private Vehicle assignedVehicle;
 
-    public ParkingSpot(String spotId) 
+    public ParkingSpot(String spotId)
     {
         this.spotId = spotId;
+        this.spotType = "STANDARD";
         this.assignedVehicle = null;
     }
 
-    public String getSpotId()    
-    { 
-        return spotId; 
+    public ParkingSpot(String spotId, String spotType)
+    {
+        this.spotId = spotId;
+        this.spotType = spotType;
+        this.assignedVehicle = null;
     }
-    public String getSpotLabel() 
-    { 
-        return spotId; 
+
+    public String getSpotId()
+    {
+        return spotId;
+    }
+    public String getSpotLabel()
+    {
+        return spotId;
     } //alias used by vehicle classes
-    public Vehicle getAssignedVehicle() 
-    { 
-        return assignedVehicle; 
+    public String getSpotType()
+    {
+        return spotType;
+    }
+    public Vehicle getAssignedVehicle()
+    {
+        return assignedVehicle;
     }
     public boolean isOccupied() 
     { 
@@ -48,16 +58,16 @@ public class ParkingSpot
         this.assignedVehicle = null;
     }
 
-    public void displaySpotInfo() 
+    public void displaySpotInfo()
     {
-        System.out.println("Spot ID  : " + spotId);
+        System.out.println("Spot ID  : " + spotId + " [" + spotType + "]");
         System.out.println("Status   : " + (isOccupied() ? "Occupied" : "Available"));
         if (isOccupied()) System.out.println("Vehicle  : " + assignedVehicle.getLicensePlate());
     }
 
     @Override
-    public String toString() 
+    public String toString()
     {
-        return "ParkingSpot{id=" + spotId + ", occupied=" + isOccupied() + "}";
+        return "ParkingSpot{id=" + spotId + ", type=" + spotType + ", occupied=" + isOccupied() + "}";
     }
 }
