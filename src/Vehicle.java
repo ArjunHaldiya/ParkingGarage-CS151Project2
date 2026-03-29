@@ -105,42 +105,5 @@ public abstract class Vehicle {
                ", Owner : " + ownerName;
     }
 
-
-    //adding some exceptions to test 
-
-    public class SpotOccupiedException extends Exception 
-    {
-        public SpotOccupiedException(String message) 
-        {
-            super(message);
-        }
-    }
-
-    public class InvalidPaymentException extends Exception 
-    {
-        public InvalidPaymentException(String message) 
-        {
-            super(message);
-        }
-    }
-
-
-    public class VehicleNotFoundException extends Exception 
-    {
-        public VehicleNotFoundException(String message) 
-        {
-            super(message);
-        }
-    }
-
-    //if license plate number entered is invalid 
-    public class InvalidLicensePlateException extends Exception 
-    {
-        public InvalidLicensePlateException(String message) {
-            super(message);
-        }
-    }
-
-
     
 }
